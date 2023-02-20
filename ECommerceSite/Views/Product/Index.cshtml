@@ -1,0 +1,152 @@
+﻿
+
+@model IEnumerable<Product>
+@inject IHttpContextAccessor http
+@{ ViewData["Title"] = "Product Catalog"; }
+<head>
+    <style>
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .col-md-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+            padding: 0 15px;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+            }
+
+
+
+        .card {
+            width: 100%;
+        }
+
+
+        .col-md-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    </style>
+</head>
+<h1>Catalogue de Produit</h1>
+<a asp-action="Add" asp-controller="Product">
+    Add Product
+</a>
+@{ // mywebsite.com/Product/Index
+    string prevUrl = http.HttpContext.Request.Path; }
+
+@if (TempData["Message"] != null)
+{
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    @TempData["Message"]
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>}
+
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        @foreach (var product in Model)
+        {
+<div class="col-md-3 mb-4">
+    <div class="card">
+        <img src="~/Images/@product.ImageUrl" class="card-img-top" alt="@product.Title">
+        <div class="card-body">
+            <h5 class="card-title">@product.Title</h5>
+
+            <p class="card-text">@product.Price.ToString("C")</p>
+            <p class="card-text">@product.Category</p>
+            <a class="btn btn-secondary" asp-route-id="@product.ProductId" asp-action="Edit">Edit</a>
+            <a class="btn btn-danger" asp-route-id="@product.ProductId" asp-action="Delete">Delete</a>
+            <a class="btn btn-primary" asp-route-id="@product.ProductId" asp-route-prevUrl="@prevUrl"
+               asp-controller="Cart" asp-action="Add" class="btn btn-primary">Add to Cart</a>
+        </div>
+    </div>
+</div>}
+    </div>
+</div>
+
+
+
+@*Print page numbers*@
+<ul class="pagination">
+    @for (int i = 1; i <= (int)ViewData["MaxPage"]; i++)
+    {
+        if (i == (int)ViewData["CurrentPage"])
+        {
+<li class="page-item active">
+    <a class="page-link" asp-action="Index" asp-route-id="@i">
+        @i
+    </a>
+</li> }
+                else
+                {
+<li class="page-item">
+    <a class="page-link" asp-action="Index" asp-route-id="@i">
+        @i
+    </a>
+</li>}
+            }
+</ul>
+
